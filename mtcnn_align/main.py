@@ -71,7 +71,7 @@ def main():
     model_dir = args.mtcnn_model_dir
     gpu_id = args.gpu_id
 
-    aligner = FaceAligner(model_dir, gpu_id)
+    aligner = FaceAligner(model_dir, gpu_id=gpu_id)
 
     index = 0
     with open(det_json, "r") as f:
@@ -99,7 +99,7 @@ def main():
                 continue
 
             # 只crop一张脸
-            face_chip = aligner.get_face_chips(img, pts)
+            face_chip = aligner.get_face_chips(img, [pts])
 
             save_name = os.path.join(sub_save_dir, img_name)
             cv2.imwrite(save_name, face_chip[0])
