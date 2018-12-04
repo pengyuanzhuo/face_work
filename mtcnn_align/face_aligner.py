@@ -14,7 +14,7 @@ class FaceAligner:
     def __init__(self, caffe_model_path=None, gpu_id=0):
         self.aligner = None
         if caffe_model_path:
-            self.aligner = MtcnnAligner(caffe_model_path, gpu_id)
+            self.aligner = MtcnnAligner(caffe_model_path, gpu_id=gpu_id)
 
     def align_face(self, img, face_rects):
         if isinstance(img, str):
