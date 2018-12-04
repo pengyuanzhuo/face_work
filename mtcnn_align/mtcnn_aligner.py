@@ -324,6 +324,9 @@ def get_aligner(caffe_model_path, use_more_stage=False, gpu_id=0):
     if gpu_id >= 0:
         caffe.set_mode_gpu()
         caffe.set_device(gpu_id)
+    else:
+        print("CPU MODE!!!")
+        caffe.set_mode_cpu()
 
     if use_more_stage:
         RNet = caffe.Net(osp.join(caffe_model_path, "det2.prototxt"),
