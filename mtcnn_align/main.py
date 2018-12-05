@@ -99,7 +99,7 @@ def main():
                 continue
 
             # 只crop一张脸
-            face_chip = aligner.get_face_chips(img, [pts])
+            face_chip = aligner.get_face_chips(img, [pts], output_square=default_square)
 
             save_name = os.path.join(sub_save_dir, img_name)
             cv2.imwrite(save_name, face_chip[0])
