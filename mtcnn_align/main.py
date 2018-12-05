@@ -81,13 +81,13 @@ def main():
             line = json.loads(line.strip())
 
             # 一个url对应一个pts
-            url = line["url"]
-            if "boundingBox" not in line['det'][0]:
+            url = str(line["url"])
+            if not line['det']:
                 continue
             pts = line['det'][0]['boundingBox']['pts']
 
             # 图片以人名为前缀, 若无, 则为neg
-            name = url.split('/')[-2]
+            name = str(url.split('/')[-2])
             img_name = url.split('/')[-1]
 
             sub_save_dir = os.path.join(save_dir, name)
