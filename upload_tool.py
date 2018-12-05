@@ -11,6 +11,9 @@ from qiniu import CdnManager
 from concurrent.futures import as_completed
 from concurrent.futures import ThreadPoolExecutor
 import argparse
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 def parse():
     args = argparse.ArgumentParser("upload")
@@ -20,7 +23,7 @@ def parse():
         help='上传bucket')
     args.add_argument('--urllist', type=str, required=True,
         help='保存的urllist文件')
-    args.add_argument('--no-keep', action='store_false', default=True,
+    args.add_argument('--no-keep', action='store_true', default=False,
         help="上传后是否保持原目录结构[默认True]")
     args.add_argument('--thread', type=int, default=10,
         help="并发数, 默认10")
@@ -142,10 +145,10 @@ def upload_concurrent(file_list, bucket_name, ak, sk, prefix=None, key=None, thr
                 local_file = future_tasks[task]
                 try:
                     url = task.result()
-                    print('[%d / %d] %s done.'%(count, all_file, url))
+                    print('[%d / %d] %s done.'%(count, all_file, url.encode('utf-8')))
                 except Exception as e:
                     url = None
-                    print('[%d / %d] %s --> %s'%(count, all_file, local_file, e))
+                    print('[%d / %d] %s --> %s'%(count, all_file, local_file.encode('utf-8'), e))
                 count += 1
                 url_dict[local_file] = url
     return url_dict
@@ -190,16 +193,16 @@ def upload_dir(root_dir, bucket_name, ak, sk, keep_struct=True, prefix=None, thr
 
 if __name__ == "__main__":
     args = parse()
-    with open('args.config', 'r') as f:
+    with open(args.config, 'r') as f:
         config = json.load(f)
     root_dir = args.root_dir
     bucket = args.bucket
-    ak = congig['ak']
+    ak = config['ak']
     sk = config['sk']
     keep_struct = not args.no_keep
     thread = args.thread
 
-    url_dict = upload_dir(root_dir, bucket, ak, sk, keep_struct, thread)
+    url_dict = upload_dir(root_dir, bucket, ak, sk, keep_struct, thread=thread)
     with open(args.urllist, 'w') as f:
         for _, url in url_dict.items():
             if url is not None:
